@@ -4,18 +4,36 @@ import app from "../src/index";
 const api = supertest(app);
 
 //createFruit (/post /fruits)
-// describe("POST /fruits", () => {
-//     it("should create a fruit", async () => {
-//         const body = {
-//             name: "banana",
-//             price: 1.2
-//         }
-//         const create = await api.post('/fruits');
-//         console.log(create.body)
-//         //toBe -> "matcher"
-//         expect(create.status).toBe(200);
-//     })
-// })
+describe("POST /fruits", () => {
+    it("should create a fruit", async () => {
+        const body = {
+            name: "banana",
+            price: 1.2
+        }
+        const create = await api.post('/fruits').send(body);
+        //toBe -> "matcher"
+        expect(create.status).toBe(201);
+    })
+
+    it("should respond with 422(unprocessable entity) if the sent body is invalid", async () => {
+        const body = {
+            name: "uva",
+        }
+        const result = await api.post('/fruits').send(body);
+        expect (result.status).toBe(422)
+    })
+
+    it("should respond with 409(conflict) if there's already an equal name on the database", async () => {
+        const body = {
+            name: "banana",
+            price: 1.2
+        }
+
+        const result = await api.post('/fruits').send(body);
+        expect (result.status).toBe(409);
+    })
+    
+})
 
 
 //getFruits (GET fruits)
@@ -25,7 +43,7 @@ describe("GET /fruits", () => {
             name: "banana",
             price: 1.2
         }
-        await supertest(app).post('/fruits').send(body)
+        await api.post('/fruits').send(body)
 
         const result = await api.get('/fruits');
         expect(result.status).toBe(200)
@@ -38,7 +56,13 @@ describe("GET /fruits", () => {
         ])
     })
 })
+
+
 //getSpecificFruit (GET fruits/:id)
 
-
+describe("GET /fruits/:id", () => {
+    it("should get a fruit by a specific id", async () => {
+        
+    })
+})
 
