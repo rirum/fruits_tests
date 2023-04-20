@@ -7,7 +7,7 @@ const api = supertest(app);
 describe("POST /fruits", () => {
     it("should create a fruit", async () => {
         const body = {
-            name: "banana",
+            name: "morango",
             price: 1.2
         }
         const create = await api.post('/fruits').send(body);
@@ -25,7 +25,7 @@ describe("POST /fruits", () => {
 
     it("should respond with 409(conflict) if there's already an equal name on the database", async () => {
         const body = {
-            name: "banana",
+            name: "morango",
             price: 1.2
         }
 
@@ -40,7 +40,7 @@ describe("POST /fruits", () => {
 describe("GET /fruits", () => {
     it("should get all fruits", async () => {
         const body = {
-            name: "banana",
+            name: "morango",
             price: 1.2
         }
         await api.post('/fruits').send(body)
@@ -61,8 +61,26 @@ describe("GET /fruits", () => {
 //getSpecificFruit (GET fruits/:id)
 
 describe("GET /fruits/:id", () => {
-    it("should get a fruit by a specific id", async () => {
+    //200
+    it("should get a fruit by an specific id", async () => {
+    
+
+        const result = await api.get('/fruits/1');
+        expect(result.status).toBe(200);
+        expect(result.body).toEqual(
+            expect.objectContaining({
+                id: expect.any(Number),
+                name: expect.any(String),
+                price: expect.any(Number), 
+            })    
+        )
         
     })
+
+    //404
+    it("should respond with 404 when a fruit is not found", async() => {
+        const result = await api.get('/fruits/2');
+        expect (result.status).toBe(404);
+    } )
 })
 
